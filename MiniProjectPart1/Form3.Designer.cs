@@ -36,6 +36,9 @@
             usernameTextBox = new TextBox();
             radioButton1 = new RadioButton();
             radioButton2 = new RadioButton();
+            button3 = new Button();
+            passwordAgainTextBox = new TextBox();
+            label3 = new Label();
             SuspendLayout();
             // 
             // button1
@@ -112,11 +115,40 @@
             radioButton2.Text = "User";
             radioButton2.UseVisualStyleBackColor = true;
             // 
+            // button3
+            // 
+            button3.Location = new Point(253, 297);
+            button3.Name = "button3";
+            button3.Size = new Size(75, 23);
+            button3.TabIndex = 8;
+            button3.Text = "Register";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += RegisterButton_Click;
+            // 
+            // passwordAgainTextBox
+            // 
+            passwordAgainTextBox.Location = new Point(240, 231);
+            passwordAgainTextBox.Name = "passwordAgainTextBox";
+            passwordAgainTextBox.Size = new Size(100, 23);
+            passwordAgainTextBox.TabIndex = 10;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(133, 239);
+            label3.Name = "label3";
+            label3.Size = new Size(96, 15);
+            label3.TabIndex = 9;
+            label3.Text = "Repeat Password";
+            // 
             // Form3
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(passwordAgainTextBox);
+            Controls.Add(label3);
+            Controls.Add(button3);
             Controls.Add(radioButton2);
             Controls.Add(radioButton1);
             Controls.Add(usernameTextBox);
@@ -141,5 +173,8 @@
         private TextBox usernameTextBox;
         private RadioButton radioButton1;
         private RadioButton radioButton2;
+        private Button button3;
+        private TextBox passwordAgainTextBox;
+        private Label label3;
     }
 }
