@@ -5,7 +5,7 @@ namespace MiniProjectPart1
 {
     public partial class Form1 : Form
     {
-        SqlConnection con = new SqlConnection(@"Data Source=LAB108PC13\SQLEXPRESS;Initial Catalog=TourismNew;Integrated Security=True");
+        SqlConnection con = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True");
 
         public Form1()
         {
@@ -16,7 +16,7 @@ namespace MiniProjectPart1
         {
             if (!string.IsNullOrWhiteSpace(townTextBox.Text) && !string.IsNullOrWhiteSpace(replacedTownTextBox.Text))
             {
-                using (SqlConnection con = new SqlConnection(@"Data Source=LAB108PC13\SQLEXPRESS;Initial Catalog=TourismNew;Integrated Security=True"))
+                using (SqlConnection con = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True"))
                 {
                     using (SqlCommand cmd = new SqlCommand("UPDATE Towns SET TownName = @city WHERE TownName = @replacedCity", con))
                     {

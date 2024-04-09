@@ -133,7 +133,7 @@
             button3.TabIndex = 8;
             button3.Text = "Register";
             button3.UseVisualStyleBackColor = true;
-            button3.Click += RegisterButton_Click;
+            button3.Click += registerButton_Click;
             // 
             // passwordAgainTextBox
             // 

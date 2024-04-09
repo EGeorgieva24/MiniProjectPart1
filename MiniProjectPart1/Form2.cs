@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,12 +18,14 @@ namespace MiniProjectPart1
         public Form2(bool isAdmin)
         {
             InitializeComponent();
-            PopulateCountriesComboBox();
-            PopulateTownsComboBox();
-            if (!isAdmin)
+
+            if (isAdmin)
+            {
+                adminButton.Enabled = true;
+            }
+            else
             {
                 adminButton.Enabled = false;
-                adminButton.Visible = false;
             }
         }
 
@@ -34,7 +37,7 @@ namespace MiniProjectPart1
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(@"Data Source=LAB108PC13\SQLEXPRESS;Initial Catalog=TourismNew;Integrated Security=True"))
+                using (SqlConnection connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True"))
                 {
                     string query = "SELECT CountryName FROM Country";
                     using (SqlCommand command = new SqlCommand(query, connection))
@@ -59,7 +62,7 @@ namespace MiniProjectPart1
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(@"Data Source=LAB108PC13\SQLEXPRESS;Initial Catalog=TourismNew;Integrated Security=True"))
+                using (SqlConnection connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True"))
                 {
                     string query = "SELECT TownName FROM Towns";
                     using (SqlCommand command = new SqlCommand(query, connection))
@@ -92,6 +95,22 @@ namespace MiniProjectPart1
 
                 // Enable admin button if the user is an admin
 
+            }
+        }
+
+        private void editProfile_CLick(object sender, EventArgs e)
+        {
+            {
+                if (int.TryParse(userIdBox.Text, out int userId))
+                {
+                    // Open Form4
+                    Form4 form4 = new Form4(userId);
+                    form4.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Invalid user ID.");
+                }
             }
         }
     }

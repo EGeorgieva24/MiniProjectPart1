@@ -24,24 +24,19 @@ namespace MiniProjectPart1
 
             string username = usernameTextBox.Text;
             string password = passwordTextBox.Text;
-            if (username.Contains("admin") && password.Contains("admin"))
+
+            if (username.Equals("admin") && password.Equals("admin"))
             {
                 IsAdmin = true;
-                DialogResult = DialogResult.OK;
-                Form2 steve = new Form2(true);
-                steve.Show(); // Enable adminButton for admin
-            }
-            else if (username.Contains("user") && password.Contains("user"))
-            {
-                IsAdmin = false;
-                DialogResult = DialogResult.OK;
-                Form2 steve = new Form2(true);
-                steve.Show();// Disable adminButton for non-admin users
             }
             else
             {
-                MessageBox.Show("Invalid username or password. Please try again.");
+                IsAdmin = false;
             }
+
+            DialogResult = DialogResult.OK;
+            Form2 steve = new Form2(IsAdmin);
+            steve.Show();
 
         }
 
@@ -52,46 +47,48 @@ namespace MiniProjectPart1
             DialogResult = DialogResult.Cancel;
         }
 
-        private void RegisterButton_Click(object sender, EventArgs e)
+        private void registerButton_Click(object sender, EventArgs e)
         {
             string username = usernameTextBox.Text;
             string password = passwordTextBox.Text;
             string confirmPassword = passwordAgainTextBox.Text;
             string pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[?!@#$%_&*])[A-Za-z0-9?!@#$%_&*]{8,}$";
 
+            // Check if passwords match
             if (password != confirmPassword)
             {
                 MessageBox.Show("Passwords do not match!");
                 return;
             }
 
+            // Check if password meets complexity requirements
             if (!Regex.IsMatch(password, pattern))
             {
                 MessageBox.Show("Invalid password. Password should be at least 8 characters long with at least one capital letter, one lowercase letter, one digit, and one special character.");
                 return;
             }
 
-            // Generate salt (in this case, using DateandTime)
+            // Generate salt (in this case, using DateTime)
             string salt = DateTime.Now.ToString();
 
             // Hash the password
             string hashedPassword = hashPassword($"{password}{salt}");
 
             // Establish connection string to your SQL Server database
-            string connectionString = @"Data Source=LAB108PC13\SQLEXPRESS;Initial Catalog=TourismNew;Integrated Security=True";
+            string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
                 // Prepare SQL query to insert data into the Users table
-                string query = "INSERT INTO Users (Username, DateandTime, Password) VALUES (@Username, @DateandTime, @Password)";
+                string query = "INSERT INTO Users (Username, DateAndTime, Password) VALUES (@Username, @DateAndTime, @Password)";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     // Add parameters to prevent SQL injection
                     command.Parameters.AddWithValue("@Username", username);
-                    command.Parameters.AddWithValue("@DateandTime", salt); // Store salt
+                    command.Parameters.AddWithValue("@DateAndTime", salt); // Store salt
                     command.Parameters.AddWithValue("@Password", hashedPassword); // Store hashed password
 
                     // Execute the query
@@ -99,8 +96,7 @@ namespace MiniProjectPart1
                     if (rowsAffected > 0)
                     {
                         MessageBox.Show("User registered successfully.");
-                        Form4 form4 = new Form4();
-                        form4.Show();
+                        ClearTextBoxes(); // Optional: Clear textboxes after successful registration
                     }
                     else
                     {
@@ -109,6 +105,13 @@ namespace MiniProjectPart1
                 }
             }
         }
+        private void ClearTextBoxes()
+        {
+            usernameTextBox.Text = "";
+            passwordTextBox.Text = "";
+            passwordAgainTextBox.Text = "";
+        }
+    
 
 
         string hashPassword(string password)
