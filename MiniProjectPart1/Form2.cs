@@ -91,9 +91,8 @@ namespace MiniProjectPart1
                 form1.Show();
 
                 // Enable admin button if the user is an admin
-                
+
             }
         }
     }
 }
-

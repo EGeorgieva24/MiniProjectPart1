@@ -36,6 +36,10 @@
             usernameTextBox = new TextBox();
             radioButton1 = new RadioButton();
             radioButton2 = new RadioButton();
+            button3 = new Button();
+            passwordAgainTextBox = new TextBox();
+            label3 = new Label();
+            label4 = new Label();
             SuspendLayout();
             // 
             // button1
@@ -85,7 +89,6 @@
             passwordTextBox.Location = new Point(343, 308);
             passwordTextBox.Margin = new Padding(4, 5, 4, 5);
             passwordTextBox.Name = "passwordTextBox";
-            passwordTextBox.PasswordChar = '*';
             passwordTextBox.Size = new Size(141, 31);
             passwordTextBox.TabIndex = 4;
             // 
@@ -96,6 +99,7 @@
             usernameTextBox.Name = "usernameTextBox";
             usernameTextBox.Size = new Size(141, 31);
             usernameTextBox.TabIndex = 5;
+            usernameTextBox.TextChanged += usernameTextBox_TextChanged;
             // 
             // radioButton1
             // 
@@ -121,11 +125,52 @@
             radioButton2.Text = "User";
             radioButton2.UseVisualStyleBackColor = true;
             // 
+            // button3
+            // 
+            button3.Location = new Point(372, 497);
+            button3.Name = "button3";
+            button3.Size = new Size(112, 34);
+            button3.TabIndex = 8;
+            button3.Text = "Register";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += RegisterButton_Click;
+            // 
+            // passwordAgainTextBox
+            // 
+            passwordAgainTextBox.Location = new Point(343, 408);
+            passwordAgainTextBox.Margin = new Padding(4, 5, 4, 5);
+            passwordAgainTextBox.Name = "passwordAgainTextBox";
+            passwordAgainTextBox.Size = new Size(141, 31);
+            passwordAgainTextBox.TabIndex = 10;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(190, 422);
+            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(0, 25);
+            label3.TabIndex = 9;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(151, 414);
+            label4.Margin = new Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(146, 25);
+            label4.TabIndex = 11;
+            label4.Text = "Repeat Password";
+            // 
             // Form3
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1143, 750);
+            Controls.Add(label4);
+            Controls.Add(passwordAgainTextBox);
+            Controls.Add(label3);
+            Controls.Add(button3);
             Controls.Add(radioButton2);
             Controls.Add(radioButton1);
             Controls.Add(usernameTextBox);
@@ -151,5 +196,9 @@
         private TextBox usernameTextBox;
         private RadioButton radioButton1;
         private RadioButton radioButton2;
+        private Button button3;
+        private TextBox passwordAgainTextBox;
+        private Label label3;
+        private Label label4;
     }
 }
