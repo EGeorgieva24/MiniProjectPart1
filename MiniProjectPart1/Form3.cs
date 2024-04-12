@@ -19,30 +19,82 @@ namespace MiniProjectPart1
             InitializeComponent();
         }
 
-        private void loginButton_Click(object sender, EventArgs e)
+        private void LoginButton_Click(object sender, EventArgs e)
         {
-
             string username = usernameTextBox.Text;
             string password = passwordTextBox.Text;
+            string pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[?!@#$%_&*])[A-Za-z0-9?!@#$%_&*]{8,}$";
 
-            if (username.Equals("admin") && password.Equals("admin"))
+            // Check if password meets complexity requirements
+            if (!Regex.IsMatch(password, pattern))
             {
-                IsAdmin = true;
+                MessageBox.Show("Invalid password. Password should be at least 8 characters long with at least one capital letter, one lowercase letter, one digit, and one special character.");
+                return;
+            }
+
+            // Generate salt
+            byte[] saltBytes = GenerateSalt();
+            string salt = Convert.ToBase64String(saltBytes);
+
+            // Hash the password
+            string hashedPassword = HashPassword(password, salt);
+
+            // Check if the username and password match in the database
+            if (CheckCredentials(username, hashedPassword))
+            {
+                MessageBox.Show("Login successful!");
             }
             else
             {
-                IsAdmin = false;
+                MessageBox.Show("Invalid username or password.");
             }
-
-            DialogResult = DialogResult.OK;
-            Form2 steve = new Form2(IsAdmin);
-            steve.Show();
-
         }
 
+        private byte[] GenerateSalt()
+        {
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                byte[] salt = new byte[32];
+                rng.GetBytes(salt);
+                return salt;
+            }
+        }
 
+        private string HashPassword(string password, string salt)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] saltedPassword = Encoding.UTF8.GetBytes(password + salt);
+                byte[] hashedPasswordBytes = sha256.ComputeHash(saltedPassword);
+                return Convert.ToBase64String(hashedPasswordBytes);
+            }
+        }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        private bool CheckCredentials(string username, string hashedPassword)
+        {
+            using (SqlConnection connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True"))
+            {
+                string query = "SELECT Password, Salt FROM User_Profiles WHERE Username = @Username";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            string storedPassword = reader.GetString(0);
+                            string storedSalt = reader.GetString(1);
+                            string hashedPasswordToCheck = HashPassword(passwordTextBox.Text, storedSalt);
+                            return hashedPasswordToCheck == storedPassword;
+                        }
+                        return false; // Username not found
+                    }
+                }
+            }
+        }
+    
+private void cancelButton_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
         }

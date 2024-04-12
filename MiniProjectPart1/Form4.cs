@@ -118,60 +118,13 @@ namespace MiniProjectPart1
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-
-                // Prepare SQL query to retrieve user profile information
-                string query = @"SELECT UP.Picture, UP.FirstName, UP.LastName, UP.Country, UP.Gender
-                         FROM User_Profiles UP
-                         JOIN Users U ON UP.UserId = U.Id
-                         WHERE U.Id = @UserId";
-
-                SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@UserId", userId); // Assuming you have the userId stored in this form
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    // Load profile picture
-                    if (!reader.IsDBNull(0))
-                    {
-                        byte[] photoBytes = (byte[])reader["Picture"];
-                        MemoryStream ms = new MemoryStream(photoBytes);
-                        pictureBox1.Image = Image.FromStream(ms);
-                    }
-
-                    // Load first name
-                    if (!reader.IsDBNull(1))
-                    {
-                        firstNameTextBox.Text = reader.GetString(1);
-                    }
-
-                    // Load last name
-                    if (!reader.IsDBNull(2))
-                    {
-                        lastnameTextBox.Text = reader.GetString(2);
-                    }
-
-                    // Load country
-                    if (!reader.IsDBNull(3))
-                    {
-                        countryTextBox.Text = reader.GetString(3);
-                    }
-
-                    // Load gender
-                    if (!reader.IsDBNull(4))
-                    {
-                        string gender = reader.GetString(4);
-                        if (gender == "Male")
-                        {
-                            maleButton.Checked = true;
-                        }
-                        else if (gender == "Female")
-                        {
-                            femaleRadio.Checked = true;
-                        }
-                    }
-                }
-                reader.Close();
+                SqlCommand cmd = new SqlCommand("SELECT photo from Picture where id = @id", con);
+                cmd.Parameters.AddWithValue("@id", int.Parse(index));
+                SqlDataAdapter adapter = new SqlDataAdapter();
+                adapter.SelectCommand = cmd;
+                DataTable resultTable = new DataTable();
+                adapter.Fill(resultTable);
+                pictureBox1.Image = GetImage((byte[])resultTable.Rows[0][photo]);
             }
         }
     }
