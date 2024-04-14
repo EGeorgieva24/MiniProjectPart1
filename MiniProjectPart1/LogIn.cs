@@ -11,10 +11,10 @@ using System.Windows.Forms;
 
 namespace MiniProjectPart1
 {
-    public partial class Form3 : Form
+    public partial class LogIn : Form
     {
         public bool IsAdmin { get; private set; }
-        public Form3()
+        public LogIn()
         {
             InitializeComponent();
         }
@@ -25,6 +25,13 @@ namespace MiniProjectPart1
             string password = passwordTextBox.Text;
             string pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[?!@#$%_&*])[A-Za-z0-9?!@#$%_&*]{8,}$";
 
+            // Check if username is empty or null
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                MessageBox.Show("Please enter a username.");
+                return;
+            }
+
             // Check if password meets complexity requirements
             if (!Regex.IsMatch(password, pattern))
             {
@@ -32,17 +39,20 @@ namespace MiniProjectPart1
                 return;
             }
 
-            // Generate salt
-            byte[] saltBytes = GenerateSalt();
-            string salt = Convert.ToBase64String(saltBytes);
+            
 
             // Hash the password
-            string hashedPassword = HashPassword(password, salt);
+            //"M6qjPlXpr0F5Y7YPoTM+tUqiv4N0kGXmWNCZderYhwQ="
+            
 
             // Check if the username and password match in the database
-            if (CheckCredentials(username, hashedPassword))
+            if (CheckCredentials(username, password))
             {
                 MessageBox.Show("Login successful!");
+
+                // Open Form4 if login is successful
+                Form4 form4 = new Form4(username);
+                form4.Show();
             }
             else
             {
@@ -69,12 +79,11 @@ namespace MiniProjectPart1
                 return Convert.ToBase64String(hashedPasswordBytes);
             }
         }
-
-        private bool CheckCredentials(string username, string hashedPassword)
+        private bool CheckCredentials(string username, string enteredPassword)
         {
             using (SqlConnection connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True"))
             {
-                string query = "SELECT Password, Salt FROM User_Profiles WHERE Username = @Username";
+                string query = "SELECT Password, DateAndTime FROM Users WHERE Username = @Username";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Username", username);
@@ -83,18 +92,24 @@ namespace MiniProjectPart1
                     {
                         if (reader.Read())
                         {
-                            string storedPassword = reader.GetString(0);
+                            string storedHashedPassword = reader.GetString(0);
+
+                            // Extract salt from the stored hashed password
                             string storedSalt = reader.GetString(1);
-                            string hashedPasswordToCheck = HashPassword(passwordTextBox.Text, storedSalt);
-                            return hashedPasswordToCheck == storedPassword;
+
+                            // Hash the entered password with the same salt
+                            string enteredHashedPassword = hashPassword($"{enteredPassword}{storedSalt}");
+
+                            // Compare the hashed passwords
+                            return enteredHashedPassword == storedHashedPassword;
                         }
                         return false; // Username not found
                     }
                 }
             }
         }
-    
-private void cancelButton_Click(object sender, EventArgs e)
+
+            private void cancelButton_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
         }
@@ -126,12 +141,27 @@ private void cancelButton_Click(object sender, EventArgs e)
             // Hash the password
             string hashedPassword = hashPassword($"{password}{salt}");
 
+
             // Establish connection string to your SQL Server database
             string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
+
+                // Check if the username already exists
+                string checkQuery = "SELECT COUNT(*) FROM Users WHERE Username = @Username";
+                using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@Username", username);
+                    int existingUserCount = (int)checkCommand.ExecuteScalar();
+
+                    if (existingUserCount > 0)
+                    {
+                        MessageBox.Show("This username is already taken. Please choose a different username.");
+                        return;
+                    }
+                }
 
                 // Prepare SQL query to insert data into the Users table
                 string query = "INSERT INTO Users (Username, DateAndTime, Password) VALUES (@Username, @DateAndTime, @Password)";
@@ -148,11 +178,76 @@ private void cancelButton_Click(object sender, EventArgs e)
                     if (rowsAffected > 0)
                     {
                         MessageBox.Show("User registered successfully.");
+
+                        // Automatically create a user profile with default values
+                        int userId = GetUserId(username);
+                        if (userId != -1)
+                        {
+                            CreateDefaultUserProfile(userId);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to create user profile.");
+                        }
+
                         ClearTextBoxes(); // Optional: Clear textboxes after successful registration
                     }
                     else
                     {
                         MessageBox.Show("Failed to register user.");
+                    }
+                }
+                 int GetUserId(string username)
+                {
+                    int userId = -1; // Initialize userId to a default value
+
+                    // Establish connection string to your SQL Server database
+                    string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True";
+
+                    using (SqlConnection con = new SqlConnection(connectionString))
+                    {
+                        con.Open();
+                        string query = "SELECT Id FROM Users WHERE Username = @Username";
+                        SqlCommand cmd = new SqlCommand(query, con);
+                        cmd.Parameters.AddWithValue("@Username", username);
+                        object result = cmd.ExecuteScalar();
+                        if (result != null)
+                        {
+                            userId = Convert.ToInt32(result);
+                        }
+                    }
+                    return userId;
+                }
+            }
+        }
+
+        // Helper method to create a default user profile for a given userId
+        private void CreateDefaultUserProfile(int userId)
+        {
+            // Establish connection string to your SQL Server database
+            string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Tourism;Integrated Security=True";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                // Prepare SQL query to insert data into the User_Profiles table
+                string query = "INSERT INTO User_Profiles (UserId, FirstName, LastName, Country, Gender) VALUES (@UserId, NULL, NULL, NULL, NULL)";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    // Add parameters
+                    command.Parameters.AddWithValue("@UserId", userId);
+
+                    // Execute the query
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Default user profile created successfully.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to create default user profile.");
                     }
                 }
             }
@@ -163,7 +258,7 @@ private void cancelButton_Click(object sender, EventArgs e)
             passwordTextBox.Text = "";
             passwordAgainTextBox.Text = "";
         }
-    
+
 
 
         string hashPassword(string password)
@@ -177,6 +272,10 @@ private void cancelButton_Click(object sender, EventArgs e)
         private void usernameTextBox_TextChanged(object sender, EventArgs e)
         {
 
+        }
+        public string GetUsername()
+        {
+            return usernameTextBox.Text;
         }
 
     }

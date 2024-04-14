@@ -100,17 +100,18 @@ namespace MiniProjectPart1
 
         private void editProfile_CLick(object sender, EventArgs e)
         {
+            LogIn form3 = new LogIn();
+            string username = form3.GetUsername(); // Assuming you have a method in Form3 to retrieve the username
+
+            if (!string.IsNullOrWhiteSpace(username))
             {
-                if (int.TryParse(userIdBox.Text, out int userId))
-                {
-                    // Open Form4
-                    Form4 form4 = new Form4(userId);
-                    form4.Show();
-                }
-                else
-                {
-                    MessageBox.Show("Invalid user ID.");
-                }
+                // Open Form4 with the provided username
+                Form4 form4 = new Form4(username);
+                form4.Show();
+            }
+            else
+            {
+                MessageBox.Show("Please enter a username in Form3.");
             }
         }
     }
