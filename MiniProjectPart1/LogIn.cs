@@ -58,6 +58,7 @@ namespace MiniProjectPart1
             {
                 MessageBox.Show("Invalid username or password.");
             }
+
         }
 
         private byte[] GenerateSalt()

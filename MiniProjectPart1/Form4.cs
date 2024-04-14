@@ -17,15 +17,22 @@ namespace MiniProjectPart1
     public partial class Form4 : Form
     {
         public string username;
+        public string Username { get; private set; }
 
         public Form4(string username)
         {
             InitializeComponent();
 
             this.username = username;
+            Username = username;
             LoadProfilePhoto(username);
-
+            if (Username.ToLower() != "admin")
+            {
+                showProfilesButton.Visible = false; // Hide the button if not admin
+            }
         }
+
+
 
         private void saveButton_Click(object sender, EventArgs e)
         {
@@ -164,9 +171,9 @@ namespace MiniProjectPart1
                     MessageBox.Show("Failed to save profile.");
                 }
             }
-        
 
-    }
+
+        }
         private void LoadProfilePhoto(string username)
         {
             // Establish connection string to your SQL Server database
@@ -224,19 +231,25 @@ namespace MiniProjectPart1
                 reader.Close();
             }
         }
-            private Image GetImage(byte[] imageData)
+        private Image GetImage(byte[] imageData)
+        {
+            if (imageData == null || imageData.Length == 0)
             {
-                if (imageData == null || imageData.Length == 0)
-                {
-                    return null;
-                }
+                return null;
+            }
 
-                using (MemoryStream memoryStream = new MemoryStream(imageData))
-                {
-                    Image image = Image.FromStream(memoryStream);
-                    return image;
-                }
+            using (MemoryStream memoryStream = new MemoryStream(imageData))
+            {
+                Image image = Image.FromStream(memoryStream);
+                return image;
             }
         }
+
+        private void ShowProfilesButton_Click(object sender, EventArgs e)
+        {
+            Form5 form5 = new Form5();
+            form5.ShowDialog();
+        }
     }
+}
 

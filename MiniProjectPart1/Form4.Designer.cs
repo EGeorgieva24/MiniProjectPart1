@@ -43,13 +43,14 @@
             saveButton = new Button();
             browseButton = new Button();
             button1 = new Button();
+            showProfilesButton = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
             // 
-            pictureBox1.Location = new Point(63, 52);
-            pictureBox1.Margin = new Padding(2, 2, 2, 2);
+            pictureBox1.Location = new Point(62, 38);
+            pictureBox1.Margin = new Padding(2);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(97, 86);
             pictureBox1.TabIndex = 0;
@@ -78,7 +79,7 @@
             // firstNameTextBox
             // 
             firstNameTextBox.Location = new Point(314, 34);
-            firstNameTextBox.Margin = new Padding(2, 2, 2, 2);
+            firstNameTextBox.Margin = new Padding(2);
             firstNameTextBox.Name = "firstNameTextBox";
             firstNameTextBox.Size = new Size(106, 23);
             firstNameTextBox.TabIndex = 3;
@@ -86,7 +87,7 @@
             // lastnameTextBox
             // 
             lastnameTextBox.Location = new Point(314, 75);
-            lastnameTextBox.Margin = new Padding(2, 2, 2, 2);
+            lastnameTextBox.Margin = new Padding(2);
             lastnameTextBox.Name = "lastnameTextBox";
             lastnameTextBox.Size = new Size(106, 23);
             lastnameTextBox.TabIndex = 4;
@@ -104,7 +105,7 @@
             // countryTextBox
             // 
             countryTextBox.Location = new Point(314, 124);
-            countryTextBox.Margin = new Padding(2, 2, 2, 2);
+            countryTextBox.Margin = new Padding(2);
             countryTextBox.Name = "countryTextBox";
             countryTextBox.Size = new Size(106, 23);
             countryTextBox.TabIndex = 6;
@@ -123,7 +124,7 @@
             // 
             femaleRadio.AutoSize = true;
             femaleRadio.Location = new Point(234, 206);
-            femaleRadio.Margin = new Padding(2, 2, 2, 2);
+            femaleRadio.Margin = new Padding(2);
             femaleRadio.Name = "femaleRadio";
             femaleRadio.Size = new Size(63, 19);
             femaleRadio.TabIndex = 8;
@@ -135,7 +136,7 @@
             // 
             maleButton.AutoSize = true;
             maleButton.Location = new Point(354, 206);
-            maleButton.Margin = new Padding(2, 2, 2, 2);
+            maleButton.Margin = new Padding(2);
             maleButton.Name = "maleButton";
             maleButton.Size = new Size(51, 19);
             maleButton.TabIndex = 9;
@@ -146,7 +147,7 @@
             // userIdBox
             // 
             userIdBox.Location = new Point(463, 87);
-            userIdBox.Margin = new Padding(2, 2, 2, 2);
+            userIdBox.Margin = new Padding(2);
             userIdBox.Name = "userIdBox";
             userIdBox.Size = new Size(71, 23);
             userIdBox.TabIndex = 11;
@@ -164,7 +165,7 @@
             // saveButton
             // 
             saveButton.Location = new Point(439, 219);
-            saveButton.Margin = new Padding(2, 2, 2, 2);
+            saveButton.Margin = new Padding(2);
             saveButton.Name = "saveButton";
             saveButton.Size = new Size(78, 20);
             saveButton.TabIndex = 12;
@@ -175,7 +176,7 @@
             // browseButton
             // 
             browseButton.Location = new Point(81, 166);
-            browseButton.Margin = new Padding(2, 2, 2, 2);
+            browseButton.Margin = new Padding(2);
             browseButton.Name = "browseButton";
             browseButton.Size = new Size(78, 20);
             browseButton.TabIndex = 13;
@@ -186,18 +187,29 @@
             // button1
             // 
             button1.Location = new Point(81, 204);
-            button1.Margin = new Padding(2, 2, 2, 2);
+            button1.Margin = new Padding(2);
             button1.Name = "button1";
             button1.Size = new Size(78, 20);
             button1.TabIndex = 14;
             button1.Text = "Save Photo";
             button1.UseVisualStyleBackColor = true;
             // 
+            // showProfilesButton
+            // 
+            showProfilesButton.Location = new Point(442, 191);
+            showProfilesButton.Name = "showProfilesButton";
+            showProfilesButton.Size = new Size(75, 23);
+            showProfilesButton.TabIndex = 15;
+            showProfilesButton.Text = "Show Profiles";
+            showProfilesButton.UseVisualStyleBackColor = true;
+            showProfilesButton.Click += ShowProfilesButton_Click;
+            // 
             // Form4
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(560, 270);
+            Controls.Add(showProfilesButton);
             Controls.Add(button1);
             Controls.Add(browseButton);
             Controls.Add(saveButton);
@@ -213,7 +225,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(pictureBox1);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             Name = "Form4";
             Text = "Form4";
             Load += Form4_Load;
@@ -239,5 +251,6 @@
         private Button saveButton;
         private Button browseButton;
         private Button button1;
+        private Button showProfilesButton;
     }
 }
